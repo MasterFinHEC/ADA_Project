@@ -1,7 +1,7 @@
 # ADA_Project
 Repository for the Advanced Data Analytics project from the Master of science in finance from HEC Lausanne. 
 
-![HEC Lausanne Logo](https://fr.wikipedia.org/wiki/Facult%C3%A9_des_hautes_%C3%A9tudes_commerciales_de_l'universit%C3%A9_de_Lausanne#/media/Fichier:Logo_HEC_Lausanne.png)
+![HEC Lausanne Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/HEC_Lausanne_logo.svg/293px-HEC_Lausanne_logo.svg.png)
 
 ## Project
 The project is to try and find good predictors of a pandemic reach on a country. 
