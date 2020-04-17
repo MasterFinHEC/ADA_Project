@@ -1,7 +1,7 @@
 # ADA_Project
 Repository for the Advanced Data Analytics project from the Master of science in finance from HEC Lausanne. 
 
-![Image of Yaktocat](https://www.unil.ch/modules/unil-core/img/unil-logo.svg)
+![HEC Lausanne Logo](https://fr.wikipedia.org/wiki/Facult%C3%A9_des_hautes_%C3%A9tudes_commerciales_de_l'universit%C3%A9_de_Lausanne#/media/Fichier:Logo_HEC_Lausanne.png)
 
 ## Project
 The project is to try and find good predictors of a pandemic reach on a country. 
