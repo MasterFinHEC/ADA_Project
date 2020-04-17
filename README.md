@@ -14,6 +14,9 @@ Therefore using data on :
 - Proportion of people believing in God
 - Openness Index (typically Trade/GDP data)
 
+We want to see if there is a way to predict the way a country will be affected by a pandemic using the Covid-19 data. 
+
+Then, the model could be applied to other pandemic to see if the relation is the same. 
 
 ### Data
 
