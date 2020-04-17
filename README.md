@@ -4,6 +4,17 @@ Repository for the Advanced Data Analytics project from the Master of science in
 ## Project
 The project is to try and find good predictors of a pandemic reach on a country. 
 
+Therefore using data on : 
+
+- Economic Activity (GDP per capita)
+- Level of democracy
+- Density of populaiton
+- Inequality (Gini Index)
+- Quality of health System
+- Proportion of people believing in God
+- Openness Index (typically Trade/GDP data)
+
+
 ### Data
 
 #### Covid - 19 Data
