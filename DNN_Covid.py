@@ -1,16 +1,17 @@
-import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 import tensorflow_docs as tfdocs
 import tensorflow_docs.plots
 import tensorflow_docs.modeling
-import sklearn.preprocessing as preprocessing
+from sklearn import preprocessing
 import pandas as pd
 import numpy as np
 from GitHub.ADA_Project.LoadingData import data
 import seaborn as sns
 import matplotlib.pyplot as plt
 import csv
+from sklearn.decomposition import PCA
+from sklearn.linear_model import LinearRegression
 
 # Loading the data class
 Data = data()
@@ -25,7 +26,6 @@ for country in Data.y.index:
             nonZero.append(index)
             break
 
-
 # Final Data Preparation
 FeaturesContinent = Data.X['Continent']
 Data.X = Data.X.drop(['Continent'], axis=1)
@@ -37,10 +37,10 @@ encodedC = ohe.fit(FeaturesContinent.reshape(-1, 1))
 FeaturesContinent = encodedC.transform(FeaturesContinent.reshape(-1, 1)).toarray()
 Features = np.concatenate([FeaturesContinent], axis=1)
 Features = np.concatenate([Features, np.array(Data.X[['GDP', 'Gini', 'Dem', 'Pop', 'Health', 'Child', 'Dens', 'Trade',
-                                                      'Political Stability', 'GOV', 'Distance']])], axis=1)
+                                                      'Distance', 'Political Stability', 'GOV']])], axis=1)
 X = pd.DataFrame(Features, index=Data.y.index, columns=['South America', 'Europe', 'Oceania', 'North America', 'Asia',
                                                         'Africa', 'GDP', 'Gini', 'Dem', 'Pop', 'Health', 'Child',
-                                                        'Dens', 'Trade', 'Political Stability', 'GOV', 'Distance'])
+                                                        'Dens', 'Trade', 'Distance', 'Political Stability', 'GOV'])
 
 nonZero = pd.DataFrame(np.array(nonZero), index=Data.y.index, columns={'First Case'})
 X = X.join(nonZero)
@@ -84,7 +84,7 @@ Ks = pd.DataFrame(Ks, columns=['K'], index=Data.y.index)
 X0s = pd.DataFrame(X0s, columns=['x0'], index=Data.y.index)
 OptiParam = Lmax.join([Ks, X0s])
 
-del Lmax, Ks, X0s, T, Ytrue, Ypred, W, reader, csv_file
+del Lmax, Ks, X0s, T, Ytrue, Ypred, W, reader, csv_file, country, j, p, ws
 
 # ***********************************************************
 # Neural Net Implementation
@@ -97,12 +97,15 @@ Data.split(percentSplit=0.8)
 sns.pairplot(X.loc[Data.TrainSplit, ['GDP', 'Gini', 'Pop', 'Health', 'First Case']], diag_kind="kde")
 plt.show()
 
+for indicators in ['GDP', 'Gini', 'Dem', 'Pop', 'Health', 'Child', 'Dens', 'Trade', 'Distance', 'Political Stability', 'GOV']:
+    X.loc[:, indicators] = (X.loc[:, indicators].astype(float) - np.mean(X.loc[:, indicators].astype(float)))/np.std(X.loc[:, indicators].astype(float))
+
 # Normalising the data
 def build_model():
     model = keras.Sequential([
-        layers.Dense(64, activation='relu', input_shape=[X.shape[1]]),
-        layers.Dense(64, activation='relu'),
-        layers.Dense(2)
+        layers.Dense(18, activation='relu', input_shape=[X.shape[1]]),
+        layers.Dense(6, activation='softmax'),
+        layers.Dense(1)
     ])
 
     model.compile(loss='mse',
@@ -111,26 +114,107 @@ def build_model():
 
     return model
 
-NN = build_model()
+def fit_model(Output):
 
-EPOCHS = 10000
-early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
+    NN = build_model()
+    NN_Predict = np.zeros([12, 3])
+    count = 0
+    EPOCHS = 100000
+    early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
 
-history = NN.fit(
-  X.loc[Data.TrainSplit, :].astype(float), OptiParam.loc[Data.TrainSplit, ['K', 'L']].astype(float),
-  epochs=EPOCHS, validation_split=0.2, verbose=0,
-  callbacks=[early_stop, tfdocs.modeling.EpochDots()])
+    for output in Output:
+
+        history = NN.fit(
+          X.loc[Data.TrainSplit, :].astype(float), OptiParam.loc[Data.TrainSplit, [output]].astype(float),
+          epochs=EPOCHS, validation_split=0.3, verbose=0,
+          callbacks=[early_stop, tfdocs.modeling.EpochDots()])
+
+        plotter = tfdocs.plots.HistoryPlotter(smoothing_std=2)
+        plt.subplot(121)
+        plotter.plot({'Basic': history}, metric="mae")
+        plt.ylabel('MAE [MPG]')
+        plt.subplot(122)
+        plotter.plot({'Basic': history}, metric="mse")
+        plt.ylabel('MSE [MPG^2]')
+        plt.show()
+
+        loss, mae, mse = NN.evaluate(X.loc[Data.TestSplit, :].astype(float),
+                                     OptiParam.loc[Data.TestSplit, [output]].astype(float), verbose=2)
+        print("Testing set Mean Abs Error: {:5.2f} MPG".format(mae))
+
+        NN_Predict[:, count] = NN.predict(X.loc[Data.TestSplit, :].astype(float)).reshape(12,)
+
+        count += 1
+
+    return NN_Predict
+
+NN_prediction = fit_model(['K', 'L', 'x0'])
+
+def Rsquared(true, false):
+    R2 = 0
+    for coefficient in range(true.shape[1]):
+        print(coefficient)
+        a1 = sum((true.iloc[:, coefficient] - false[:, coefficient])**2)
+        print(a1)
+        a2 = sum((true.iloc[:, coefficient] - np.mean(true.iloc[:, coefficient]))**2)
+        print(a2)
+        r = 1 - a1/a2
+        print(r)
+        R2 = R2 + r
+    return R2/3
+
+Rsquared_model = Rsquared(OptiParam.loc[Data.TestSplit, :], NN_prediction)
 
 
-plotter = tfdocs.plots.HistoryPlotter(smoothing_std=2)
-plt.subplot(121)
-plotter.plot({'Basic': history}, metric="mae")
-plt.ylabel('MAE [MPG]')
-plt.subplot(122)
-plotter.plot({'Basic': history}, metric="mse")
-plt.ylabel('MSE [MPG^2]')
-plt.show()
 
-loss, mae, mse = NN.evaluate(X.loc[Data.TestSplit, :].astype(float),
-                             OptiParam.loc[Data.TestSplit, ['K', 'L']].astype(float), verbose=2)
-print("Testing set Mean Abs Error: {:5.2f} MPG".format(mae))
+def curve_pred(Parameter):
+    x = OptiParam.loc[Data.TestSplit, 'x0']
+    ypred = np.zeros((len(Parameter[0]), 151))
+    for i in range(len(Parameter[0])):
+        for j in range(151):
+            ypred[i, j] = Parameter[0][i]/(1+np.exp(Parameter[1][i]*(x[i]-j)))
+    return ypred
+
+NN_Pred = curve_pred(NN_prediction)
+
+# Rescaling the true cases
+for country in Data.y.index:
+    Data.y.loc[country, :] = Data.y.loc[country, :]/Data.X.loc[country, 'Pop']
+
+def R2(ytrue, ypred):
+
+    r = 0
+
+    for count, country in enumerate(Data.TestSplit):
+        print(country)
+        y_true = ytrue.loc[country]
+        y_true = y_true.iloc[X.loc[country, 'First Case']:len(y_true)]
+
+        y_pred = ypred[count, 0:len(y_true)]
+        print(len(y_pred))
+        print(len(y_true))
+        r = r + 1 - sum((y_pred - y_true)**2)/sum((y_true - np.mean(y_true))**2)
+        print(r)
+    return r/len(Data.TestSplit)
+
+rsquaredNN = R2(Data.y, NN_Pred)
+
+
+
+# ***********************************************************
+# PCA Implementation
+# **********************************************************
+
+IndexTrainNum = []
+for count, country in enumerate(Data.TrainSplit):
+    IndexTrainNum.append(Data.y.index.get_loc(country))
+
+IndexTestNum = []
+for count, country in enumerate(Data.TestSplit):
+    IndexTestNum.append(Data.y.index.get_loc(country))
+
+pca = PCA(n_components=2)
+pca.fit(np.transpose(X))
+LR = LinearRegression()
+LR.fit(np.transpose(pca.components_[:, IndexTrainNum]), OptiParam.iloc[IndexTrainNum, :])
+
