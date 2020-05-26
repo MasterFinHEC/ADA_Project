@@ -32,7 +32,7 @@ Taken directly from the John Hopkins for decease center, they are updated every 
 
 You can get them *[here](https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/).
 
-<iframe src="https://ourworldindata.org/grapher/total-cases-covid-19?tab=map&year=2020-01-25" style="width: 100%; height: 600px; border: 0px none;"></iframe>
+![Interactive cases](<iframe src="https://ourworldindata.org/grapher/total-cases-covid-19?tab=map&year=2020-01-25" style="width: 100%; height: 600px; border: 0px none;"></iframe>)
 
 #### World Bank Data
 Using the World Bank API, we extract social, economic and demographic data. 
