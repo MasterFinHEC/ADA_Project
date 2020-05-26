@@ -56,20 +56,20 @@ class data:
         Child = Child.droplevel(level=[1, 2])
         Child = Child
 
-        print('Loading data from Stansford University')
-        politics = pd.read_csv('politics.csv')
+        print('Loading from World Data')
+        politics = pd.read_csv('Data/politics.csv')
         politics = politics.set_index('Country Name')
         politics = politics.drop(['Series Name', 'Country Code', 'Series Code'], axis=1)
         politics = politics.rename(columns={'2018 [YR2018]': 'Political Stability'})
 
-        GOV = pd.read_csv('governement.csv')
+        GOV = pd.read_csv('Data/governement.csv')
         GOV = GOV.set_index('Country Name')
         GOV = GOV.drop(['Series Name', 'Country Code', 'Series Code'], axis=1)
         GOV = GOV.rename(columns={'2018 [YR2018]': 'GOV'})
 
         print('Loading the Economist Data')
         # Economist businne unit
-        df = pd.read_excel('DemocracyIndex.xlsx')
+        df = pd.read_excel('Data/DemocracyIndex.xlsx')
         year = df['time'] == 2018
         DEM = df[year]
         DEM = DEM.drop(['geo', 'a', 'b', 'c', 'd', 'e', 'time', 'f'], axis=1)
@@ -77,7 +77,7 @@ class data:
         DEM = DEM.rename(columns={'name': 'Country'})
 
         # Continent data
-        Cont = pd.read_csv('Countries-Continents.csv')
+        Cont = pd.read_csv('Data/Countries-Continents.csv')
         Cont = Cont.set_index('Country')
         Cont = Cont.rename(index={'US': 'United States'})
 
