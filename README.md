@@ -58,7 +58,7 @@ In order to run the code, you need to install the following libraries on your co
 pip install plotly
 pip install tensorflow
 ```
-Then the implementation runs relatively fast. However, the "the logistic" takes aroung an hour. Therefore, the optimal weights are already loaded in the "Optimal" folder and the code will download them. If you want to run the optimisation yourself, you just need to change the property of the cells from "Raw" to "Code".
+Then the implementation runs relatively fast. However, the "the logistic fitting" takes aroung an hour. Therefore, the optimal weights are already loaded in the "Optimal" folder and the code will download them. If you want to run the optimisation yourself, you just need to change the property of the cells from "Raw" to "Code".
 
 ## Authors
 
