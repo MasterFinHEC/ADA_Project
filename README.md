@@ -32,8 +32,6 @@ Taken directly from the John Hopkins for decease center, they are updated every 
 
 You can get them *[here](https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/).
 
-![Interactive cases](https://ourworldindata.org/grapher/total-cases-covid-19?tab=map&year=2020-01-25" style="width: 100%; height: 600px)
-
 #### World Bank Data
 Using the World Bank API, we extract social, economic and demographic data. 
 
@@ -52,6 +50,15 @@ We have downloaded two dataset that we couldn't have through an API, there are i
 2. A Data set mapping the countries to the continents. 
 3. Politics and government index from World Data.
 
+### Implementation
+
+In order to run the code, you need to install the following libraries on your computer: 
+
+```
+pip install plotly
+pip install tensorflow
+```
+Then the implementation runs relatively fast. However, the "the logistic" takes aroung an hour. Therefore, the optimal weights are already loaded in the "Optimal" folder and the code will download them. If you want to run the optimisation yourself, you just need to change the property of the cells from "Raw" to "Code".
 
 ## Authors
 
@@ -62,6 +69,6 @@ We have downloaded two dataset that we couldn't have through an API, there are i
 
 ## Acknowledgments
 
+* Prof. [Simon Scheidegger](https://sites.google.com/site/simonscheidegger/home?authuser=0)
+* Antoine Didisheim
 * Hat tip to anyone whose code was used
-* Inspiration
-* etc
