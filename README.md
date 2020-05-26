@@ -18,7 +18,11 @@ Therefore using data on :
 
 We want to see if there is a way to predict the way a country will be affected by a pandemic using the Covid-19 data. 
 
-Then, the model could be applied to other pandemic to see if the relation is the same. 
+The analysis is perform in two step : 
+
+1. Model the pandemic dynamic with a logistic model:
+
+![Logistic Equation](https://wikimedia.org/api/rest_v1/media/math/render/svg/9e26947596d387d045be3baeb72c11270a065665)
 
 ### Data
 
