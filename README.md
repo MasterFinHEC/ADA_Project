@@ -62,7 +62,6 @@ Then the implementation runs relatively fast. However, the "the logistic fitting
 
 ## Authors
 
-* **Alessia Di Pietro** 
 * **Antoine-Michel Alexeev** 
 * **Benjamin Souane** 
 
